@@ -45,7 +45,7 @@ class SignupView extends StatelessWidget {
                       ),
                       15.heightBox,
                       CoustomTextField(
-                        textcontroller: controller.emailController,
+                        textcontroller: controller.phoneController,
                         icon: const Icon(Icons.phone),
                         hint: "Enter your phone number",
                       ),
@@ -63,13 +63,13 @@ class SignupView extends StatelessWidget {
                         hint: AppString.passwordHint,
                         validator: controller.validpass,
                       ),
-                      20.heightBox,
+                      15.heightBox,
                       GestureDetector(
                         onTapDown: (details) {
                           controller.showDropdownMenu(context);
                         },
                         child: TextFormField(
-                          controller: controller.textEditingController,
+                          controller: controller.categoryController,
                           readOnly: true,
                           onTap: () {
                             controller.showDropdownMenu(context);
@@ -85,23 +85,31 @@ class SignupView extends StatelessWidget {
                       ),
                       15.heightBox,
                       CoustomTextField(
-                        icon: const Icon(Icons.document_scanner),
+                        textcontroller: controller.timeController,
+                        icon: const Icon(Icons.timer),
                         hint: "write your servise time",
+                        validator: controller.validfield,
                       ),
                       15.heightBox,
                       CoustomTextField(
-                        icon: const Icon(Icons.document_scanner),
+                        textcontroller: controller.aboutController,
+                        icon: const Icon(Icons.person_rounded),
                         hint: "write some thing yourself",
+                        validator: controller.validfield,
                       ),
                       15.heightBox,
                       CoustomTextField(
+                        textcontroller: controller.addressController,
                         icon: const Icon(Icons.home_rounded),
                         hint: "write your address",
+                        validator: controller.validfield,
                       ),
                       15.heightBox,
                       CoustomTextField(
+                        textcontroller: controller.serviceController,
                         icon: const Icon(Icons.type_specimen),
                         hint: "write some thing about your service",
+                        validator: controller.validfield,
                       ),
                       20.heightBox,
                       SizedBox(

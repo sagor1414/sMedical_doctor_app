@@ -3,13 +3,18 @@ import 'dart:developer';
 
 class SignupController extends GetxController {
   var nameController = TextEditingController();
+  var phoneController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+  var categoryController = TextEditingController();
+  var timeController = TextEditingController();
+  var aboutController = TextEditingController();
+  var addressController = TextEditingController();
+  var serviceController = TextEditingController();
   UserCredential? userCredential;
   var isLoading = false.obs;
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   RxString selectedValue = "Body".obs;
-  TextEditingController textEditingController = TextEditingController();
 
   void showDropdownMenu(BuildContext context) {
     final List<PopupMenuEntry<String>> items = [
@@ -37,7 +42,7 @@ class SignupController extends GetxController {
     ).then((value) {
       if (value != null) {
         selectedValue.value = value;
-        textEditingController.text = value;
+        categoryController.text = value;
       }
     });
   }
@@ -53,13 +58,20 @@ class SignupController extends GetxController {
         );
         if (userCredential != null) {
           var store = FirebaseFirestore.instance
-              .collection('users')
+              .collection('doctors')
               .doc(userCredential!.user!.uid);
           await store.set({
-            'uid': userCredential!.user!.uid,
-            'fullname': nameController.text,
-            'password': passwordController.text,
-            'email': emailController.text,
+            'docId': userCredential!.user!.uid,
+            'docName': nameController.text,
+            'docPassword': passwordController.text,
+            'docEmail': emailController.text,
+            'docAbout': aboutController.text,
+            'docAddress': addressController.text,
+            'docCategory': categoryController.text,
+            'docPhone': phoneController.text,
+            'docRating': '4',
+            'docService': serviceController.text,
+            'docTimeing': timeController.text,
           });
           VxToast.show(context, msg: "Signup Sucessfull");
         }
@@ -146,6 +158,17 @@ class SignupController extends GetxController {
     RegExp emailRefExp = RegExp(r'^.{5,}$');
     if (!emailRefExp.hasMatch(value)) {
       return 'Password enter a valid name';
+    }
+    return null;
+  }
+
+  String? validfield(value) {
+    if (value!.isEmpty) {
+      return 'please fil this document';
+    }
+    RegExp emailRefExp = RegExp(r'^.{2,}$');
+    if (!emailRefExp.hasMatch(value)) {
+      return 'please fil this document';
     }
     return null;
   }
