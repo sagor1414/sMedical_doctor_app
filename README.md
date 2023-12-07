@@ -36,15 +36,6 @@ For support, email sagorsamadder.official@gmail.com
 ## Backend
     for auth and storeing data we use firebase as a backend service
 ## Screenshots
-Home page
-![Home page Screenshot](https://github.com/sagor1414/sMedical/blob/main/assets/Screenshot_1701920056.png?raw=true)
-
-Category page
-
-![category page](https://github.com/sagor1414/sMedical/blob/main/assets/images/Screenshot_1701920078.png?raw=true)
-
-Some others
-
 ![others](https://github.com/sagor1414/sMedical/blob/main/assets/images/Screenshot_1701920095.png?raw=true)
 
 ![others](https://github.com/sagor1414/sMedical/blob/main/assets/images/Screenshot_1701920099.png?raw=true)
