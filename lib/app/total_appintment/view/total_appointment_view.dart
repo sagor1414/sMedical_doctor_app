@@ -1,3 +1,5 @@
+import 'package:s_medical_doctors/app/auth/view/login_page.dart';
+
 import '../../../general/consts/consts.dart';
 import '../controller/total_appointment.dart';
 
@@ -8,6 +10,10 @@ class TotalAppointment extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = Get.put((TotalAppointmentcontroller()));
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () async {
+        await FirebaseAuth.instance.signOut();
+        Get.offAll(() => LoginView());
+      }),
       appBar: AppBar(
         backgroundColor: AppColors.greenColor,
         title: "All Appointmnets".text.make(),
