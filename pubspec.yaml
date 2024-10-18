@@ -41,6 +41,8 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   flutter_screenutil: ^5.9.3
+  image_picker: ^1.1.2
+  firebase_storage: ^12.3.3
 
 dev_dependencies:
   flutter_test:
@@ -52,10 +54,25 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_native_splash: ^2.3.2
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/sicon.png
+  android: true
+  android_12:
+    image: assets/sicon.png
+    icon_background_color: "#FFFFFF"
+  ios: true
+  web: false
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/sicon.png"
+  min_sdk_android: 21
 # The following section is specific to Flutter packages.
 flutter:
 
