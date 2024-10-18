@@ -1,5 +1,7 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_medical_doctors/general/consts/consts.dart';
-
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../auth/controller/signup_controller.dart';
 import '../../auth/view/login_page.dart';
 import '../../widgets/coustom_iconbutton.dart';
@@ -13,7 +15,7 @@ class SettingsView extends StatelessWidget {
     var controler = Get.put(ProfileController());
     return Scaffold(
       appBar: AppBar(
-        title: "Setting".text.make(),
+        title: const Text("Setting"),
       ),
       body: Obx(
         () => controler.isLoading.value
@@ -22,32 +24,60 @@ class SettingsView extends StatelessWidget {
               )
             : Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.all(8.sp),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
                         AppAssets.imgLogin,
-                        width: 200,
+                        width: 200.w,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: controler.username.value.text.make(),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Username: ', // Static label text
+                              style: DefaultTextStyle.of(context).style,
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: controler.username.value,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                      10.heightBox,
+                       SizedBox(height: 10.h),
                       Padding(
-                        padding: const EdgeInsets.only(left: 20),
+                        padding:  EdgeInsets.only(left: 20.w),
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: controler.email.value.text.make(),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Email: ', // Static label text
+                              style: DefaultTextStyle.of(context).style,
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: controler.email.value,
+                                  style:  TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                      20.heightBox,
+                       SizedBox(height: 20.sp),
                       const Divider(),
-                      10.heightBox,
+                       SizedBox(height: 10.sp),
                       CoustomIconButton(
                         color: AppColors.redcolor,
                         onTap: () {

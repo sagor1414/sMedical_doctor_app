@@ -69,7 +69,7 @@ class SignupController extends GetxController {
             'docAddress': addressController.text,
             'docCategory': categoryController.text,
             'docPhone': phoneController.text,
-            'docRating': '4',
+            'docRating': '0',
             'docService': serviceController.text,
             'docTimeing': timeController.text,
             'deviceToken': "",

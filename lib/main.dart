@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:s_medical_doctors/general/consts/consts.dart';
-
 import 'app/auth/view/login_page.dart';
 import 'app/home/view/home.dart';
 import 'firebase_options.dart';
@@ -23,7 +23,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var isLogin = false;
   var auth = FirebaseAuth.instance;
-  //checking if user loged in or not
+  
+  // Checking if user is logged in or not
   chekIfLogin() async {
     auth.authStateChanges().listen((User? user) {
       if (user != null && mounted) {
@@ -42,14 +43,19 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'sMedical doctors',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: isLogin ? const Home() : const LoginView(),
+    return ScreenUtilInit(
+      designSize: const Size(360, 690), // Your design dimensions (width, height)
+      builder: (context, child) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'sMedical doctors',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: isLogin ? const Home() : const LoginView(),
+        );
+      },
     );
   }
 }
