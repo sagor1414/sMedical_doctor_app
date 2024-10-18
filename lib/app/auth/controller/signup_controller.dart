@@ -72,6 +72,9 @@ class SignupController extends GetxController {
             'docRating': '4',
             'docService': serviceController.text,
             'docTimeing': timeController.text,
+            'deviceToken': "",
+            'status': "approved",
+            'role': "doctor",
           });
           VxToast.show(context, msg: "Signup Sucessfull");
         }
