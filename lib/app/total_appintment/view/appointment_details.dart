@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../general/consts/consts.dart';
 import '../controller/appointment_details_controller.dart';
 
@@ -22,9 +19,8 @@ class AppointmentDetails extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        // Return 'updated' when the back button is pressed
         Get.back(result: 'updated');
-        return true; // Allow normal back navigation
+        return true;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -49,7 +45,7 @@ class AppointmentDetails extends StatelessWidget {
                         color: Colors.grey.withOpacity(0.2),
                         spreadRadius: 5,
                         blurRadius: 10,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
@@ -99,7 +95,8 @@ class AppointmentDetails extends StatelessWidget {
                                       child: Obx(() => DropdownButton<String>(
                                             value:
                                                 controller.selectedStatus.value,
-                                            icon: Icon(Icons.arrow_drop_down),
+                                            icon: const Icon(
+                                                Icons.arrow_drop_down),
                                             iconSize: 24.w,
                                             elevation: 16,
                                             style: TextStyle(

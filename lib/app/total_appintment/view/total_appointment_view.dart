@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
-import 'appointment_details.dart'; // Make sure the AppointmentDetails page is properly imported
-import '../../../general/consts/consts.dart';
-import '../controller/total_appointment.dart';
+import 'package:s_medical_doctors/app/total_appintment/controller/total_appointment.dart';
+import 'package:s_medical_doctors/app/total_appintment/view/appointment_details.dart';
+import 'package:s_medical_doctors/general/consts/consts.dart';
 
 class TotalAppointment extends StatefulWidget {
   const TotalAppointment({super.key});
@@ -16,18 +13,27 @@ class TotalAppointment extends StatefulWidget {
 class _TotalAppointmentState extends State<TotalAppointment> {
   var controller = Get.put(TotalAppointmentController());
 
-  // Function to limit the characters in a string
   String _limitCharacters(String text, int maxChars) {
     if (text.length > maxChars) {
-      return text.substring(0, maxChars) + '...';
+      return '${text.substring(0, maxChars)}...';
     }
     return text;
   }
 
-  // Refresh appointments when pulled down
   Future<void> refreshAppointments() async {
     await controller.getAppointments();
-    setState(() {}); // Trigger rebuild to reflect the updated data
+    setState(() {});
+  }
+
+  Future<String?> getUserImage(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    if (userDoc.exists && userDoc.data() != null) {
+      var data = userDoc.data() as Map<String, dynamic>;
+      return data['image'];
+    }
+    return null;
   }
 
   @override
@@ -62,128 +68,182 @@ class _TotalAppointmentState extends State<TotalAppointment> {
                 child: ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (BuildContext context, index) {
-                    var appointment = data[index].data() as Map<String, dynamic>;
+                    var appointment =
+                        data[index].data() as Map<String, dynamic>;
                     String appointmentId = data[index].id;
-                    String appBy = appointment['appBy'] ?? '';
                     String appName = appointment['appName'] ?? 'Unknown Name';
-                    String appMobile = appointment['appMobile'] ?? 'Unknown Mobile';
+                    String appMobile =
+                        appointment['appMobile'] ?? 'Unknown Mobile';
                     String appMsg = appointment['appMsg'] ?? 'No Message';
                     String appDay = appointment['appDay'] ?? 'Unknown Day';
                     String appTime = appointment['appTime'] ?? 'Unknown Time';
                     String status = appointment['status'] ?? 'pending';
+                    String appBy = appointment['appBy'];
 
-                    // Fetch the user's image based on the appBy ID
-                    return Card(
-                      elevation: 1,
-                      margin: EdgeInsets.symmetric(vertical: 10.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(13.w),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return FutureBuilder<String?>(
+                      future: getUserImage(appBy),
+                      builder: (context, imageSnapshot) {
+                        Widget avatarWidget;
+                        if (imageSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          avatarWidget = const CircularProgressIndicator();
+                        } else if (imageSnapshot.hasError ||
+                            !imageSnapshot.hasData ||
+                            imageSnapshot.data == null ||
+                            imageSnapshot.data!.isEmpty) {
+                          avatarWidget = const Center(
+                            child: Icon(
+                              Icons.account_circle,
+                              size: 50,
+                            ),
+                          );
+                        } else {
+                          avatarWidget = Center(
+                            child: CircleAvatar(
+                              radius: 25,
+                              backgroundImage:
+                                  NetworkImage(imageSnapshot.data!),
+                            ),
+                          );
+                        }
+
+                        return Card(
+                          elevation: 1,
+                          margin: EdgeInsets.symmetric(vertical: 10.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(13.w),
+                            child: Column(
                               children: [
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      // Display user image if available
-                                      Obx(() => controller.userImage.value != ''
-                                          ? Image.network(
-                                              controller.userImage.value,
-                                              height: 50.h,
-                                              width: 50.h,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : const Icon(Icons.account_circle, size: 50)),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        children: [
-                                          _limitCharacters("Appointment: $appName", 20)
-                                              .text
-                                              .size(13.sp)
-                                              .semiBold
-                                              .make(),
-                                          SizedBox(width: 8.w),
-                                          const Icon(
-                                            Icons.verified,
-                                            color: Colors.blue,
-                                            size: 16,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(_limitCharacters("Mobile: $appMobile", 20)),
-                                      Text(_limitCharacters("Message: $appMsg", 20)),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.schedule, size: 16, color: Colors.grey),
-                                          const SizedBox(width: 4),
-                                          _limitCharacters("$appDay - $appTime", 20)
-                                              .text
-                                              .color(Colors.grey[600]!)
-                                              .make(),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                                      decoration: BoxDecoration(
-                                        color: _getStatusColor(status),
-                                        borderRadius: BorderRadius.circular(20.r),
-                                      ),
-                                      child: Text(
-                                        status.capitalizeFirst!,
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    avatarWidget,
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: _limitCharacters(
+                                                      "Patient: $appName", 20),
+                                                  style: TextStyle(
+                                                    fontSize: 13.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                WidgetSpan(
+                                                  child: SizedBox(width: 8.w),
+                                                ),
+                                                const WidgetSpan(
+                                                  child: Icon(
+                                                    Icons.verified,
+                                                    color: Colors.blue,
+                                                    size: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(_limitCharacters(
+                                              "Mobile: $appMobile", 20)),
+                                          Text(_limitCharacters(
+                                              "Message: $appMsg", 20)),
+                                          const SizedBox(height: 5),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                const WidgetSpan(
+                                                  child: Icon(Icons.schedule,
+                                                      size: 16,
+                                                      color: Colors.grey),
+                                                ),
+                                                const WidgetSpan(
+                                                  child: SizedBox(width: 4),
+                                                ),
+                                                TextSpan(
+                                                  text: _limitCharacters(
+                                                      "$appDay - $appTime", 20),
+                                                  style: TextStyle(
+                                                      color: Colors.grey[600]),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(height: 20.h),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        var result = await Get.to(() => AppointmentDetails(
-                                              appointment: appointment,
-                                              appointmentId: appointmentId, // Pass the appointmentId
-                                            ));
-
-                                        // Reload appointments if the status was updated
-                                        if (result == 'updated') {
-                                          refreshAppointments();
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8.r),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12.w, vertical: 6.h),
+                                          decoration: BoxDecoration(
+                                            color: _getStatusColor(status),
+                                            borderRadius:
+                                                BorderRadius.circular(20.r),
+                                          ),
+                                          child: Text(
+                                            status.capitalizeFirst!,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      child: const Text(
-                                        "View Details",
-                                        style: TextStyle(fontSize: 10),
-                                      ),
+                                        SizedBox(height: 20.h),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            var result = await Get.to(
+                                              () => AppointmentDetails(
+                                                appointment: appointment,
+                                                appointmentId: appointmentId,
+                                              ),
+                                            );
+
+                                            if (result == 'updated') {
+                                              refreshAppointments();
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "View Details",
+                                            style: TextStyle(fontSize: 10),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),

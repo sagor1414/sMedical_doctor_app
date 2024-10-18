@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:s_medical_doctors/general/consts/consts.dart';
+
+import '../../home/view/home.dart';
 
 class LoginController extends GetxController {
   UserCredential? userCredential;
@@ -8,30 +11,55 @@ class LoginController extends GetxController {
 
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
-  //login if user enter validate email and password
   loginUser(context) async {
     if (formkey.currentState!.validate()) {
       try {
         isLoading(true);
         userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: emailController.text, password: passwordController.text);
-        isLoading(false);
-        VxToast.show(context, msg: "Login Sucessfull");
+
+        // Check if the UID exists in the 'doctors' collection
+        if (userCredential != null) {
+          String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+          DocumentSnapshot userDoc = await FirebaseFirestore.instance
+              .collection('doctors')
+              .doc(currentUserId)
+              .get();
+
+          if (!userDoc.exists) {
+            isLoading(false);
+            Get.snackbar("Login failed", "No doctor account found.",
+                snackPosition: SnackPosition.TOP);
+            return;
+          }
+
+          // Check the user's role
+          if (userDoc['role'] == 'doctor') {
+            isLoading(false);
+            Get.snackbar("Success", "Login Successful",
+                snackPosition: SnackPosition.TOP);
+            Get.offAll(() => const Home());
+          } else {
+            isLoading(false);
+            Get.snackbar("Login failed", "You are not a doctor",
+                snackPosition: SnackPosition.TOP);
+          }
+        }
       } catch (e) {
         isLoading(false);
-        VxToast.show(context, msg: "wrong email or password");
+        Get.snackbar("Login failed", "Wrong email or password",
+            snackPosition: SnackPosition.TOP);
       }
     }
   }
 
-  //validate email and password
   String? validateemail(value) {
     if (value!.isEmpty) {
       return 'please enter an email';
     }
     RegExp emailRefExp = RegExp(r'^[\w\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRefExp.hasMatch(value)) {
-      return 'please enter a valied email';
+      return 'please enter a valid email';
     }
     return null;
   }
@@ -40,8 +68,8 @@ class LoginController extends GetxController {
     if (value!.isEmpty) {
       return 'please enter a password';
     }
-    RegExp emailRefExp = RegExp(r'^.{8,}$');
-    if (!emailRefExp.hasMatch(value)) {
+    RegExp passRefExp = RegExp(r'^.{8,}$');
+    if (!passRefExp.hasMatch(value)) {
       return 'Password Must Contain At Least 8 Characters';
     }
     return null;

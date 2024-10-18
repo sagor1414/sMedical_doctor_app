@@ -71,10 +71,7 @@ class LoginView extends StatelessWidget {
                                 shape: const StadiumBorder(),
                               ),
                               onPressed: () async {
-                                await controller.loginUser(context);
-                                if (controller.userCredential != null) {
-                                  Get.offAll(() => const Home());
-                                }
+                                controller.loginUser(context);
                               },
                               child: controller.isLoading.value
                                   ? const LoadingIndicator()

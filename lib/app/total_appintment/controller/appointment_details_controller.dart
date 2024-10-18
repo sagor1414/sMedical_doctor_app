@@ -1,34 +1,29 @@
-import 'package:get/get.dart'; 
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppointmentDetailsController extends GetxController {
   var selectedStatus = ''.obs;
-  final String documentId; // To identify the specific appointment document
-  var isDropdownDisabled = false.obs; // To track if the dropdown should be disabled
+  final String documentId;
+  var isDropdownDisabled = false.obs;
 
-  // Constructor to initialize the controller and document ID
   AppointmentDetailsController(String initialStatus, this.documentId) {
     selectedStatus.value = initialStatus;
 
-    // Disable dropdown if the initial status is 'complete'
     if (initialStatus == 'complete') {
       isDropdownDisabled.value = true;
     }
   }
 
-  // Method to update the status dynamically
   void updateStatus(String newStatus) async {
     selectedStatus.value = newStatus;
 
     try {
-      // Update the status in Firestore
       await FirebaseFirestore.instance
           .collection('appointments')
           .doc(documentId)
           .update({'status': newStatus});
 
-      // Call the function based on the new status
       switch (newStatus) {
         case 'accept':
           _setAccept();
@@ -44,7 +39,6 @@ class AppointmentDetailsController extends GetxController {
           break;
       }
 
-      // Show success message or feedback
       Get.snackbar('Success', 'Appointment status updated successfully!');
     } catch (e) {
       // Handle errors, e.g., failed to update
@@ -52,7 +46,6 @@ class AppointmentDetailsController extends GetxController {
     }
   }
 
-  // Functions for handling specific status updates
   void _setAccept() {
     print("set accept");
   }
@@ -68,11 +61,9 @@ class AppointmentDetailsController extends GetxController {
   void _setComplete() {
     print("set complete");
 
-    // Disable the dropdown when 'complete' is selected
     isDropdownDisabled.value = true;
   }
 
-  // Method to get the color based on the status
   Color getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'accept':
