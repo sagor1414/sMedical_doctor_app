@@ -6,7 +6,7 @@ class TotalAppointmentcontroller extends GetxController {
     return FirebaseFirestore.instance
         .collection('appointments')
         .where(
-          'appBy',
+          'appWith',
           isEqualTo: FirebaseAuth.instance.currentUser?.uid,
         )
         .get();

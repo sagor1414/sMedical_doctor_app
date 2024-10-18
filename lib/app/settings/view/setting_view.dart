@@ -47,26 +47,6 @@ class SettingsView extends StatelessWidget {
                       ),
                       20.heightBox,
                       const Divider(),
-                      20.heightBox,
-                      // CoustomIconButton(
-                      //   color: AppColors.primeryColor,
-                      //   onTap: () {},
-                      //   title: "Change Password",
-                      //   icon: const Icon(
-                      //     Icons.lock,
-                      //     color: Colors.white,
-                      //   ),
-                      // ),
-                      10.heightBox,
-                      CoustomIconButton(
-                        color: Colors.black.withOpacity(.4),
-                        onTap: () {},
-                        title: "Terms & Condition",
-                        icon: const Icon(
-                          Icons.edit_document,
-                          color: Colors.white,
-                        ),
-                      ),
                       10.heightBox,
                       CoustomIconButton(
                         color: AppColors.redcolor,
