@@ -40,7 +40,7 @@ class _TotalAppointmentState extends State<TotalAppointment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.greenColor,
+        backgroundColor: AppColors.whiteColor,
         title: const Text("All Appointments"),
       ),
       body: FutureBuilder<QuerySnapshot>(

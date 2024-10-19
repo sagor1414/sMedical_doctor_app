@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:s_medical_doctors/general/consts/consts.dart';
 
 import '../../home/view/home.dart';

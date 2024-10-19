@@ -55,7 +55,7 @@ class ProfileController extends GetxController {
 
       // Update the user document with the new image URL
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('doctors')
           .doc(currentUser!.uid)
           .update({'image': downloadUrl});
 

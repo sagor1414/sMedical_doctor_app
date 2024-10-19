@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:s_medical_doctors/general/service/notification_service.dart';
 
 class AppointmentDetailsController extends GetxController {
   var selectedStatus = ''.obs;
@@ -10,7 +12,7 @@ class AppointmentDetailsController extends GetxController {
   AppointmentDetailsController(String initialStatus, this.documentId) {
     selectedStatus.value = initialStatus;
 
-    if (initialStatus == 'complete') {
+    if (initialStatus == 'complete' || initialStatus == 'reject') {
       isDropdownDisabled.value = true;
     }
   }
@@ -19,23 +21,35 @@ class AppointmentDetailsController extends GetxController {
     selectedStatus.value = newStatus;
 
     try {
-      await FirebaseFirestore.instance
-          .collection('appointments')
-          .doc(documentId)
-          .update({'status': newStatus});
+      // Get the document reference
+      DocumentReference appointmentDoc =
+          FirebaseFirestore.instance.collection('appointments').doc(documentId);
+
+      // Update the status
+      await appointmentDoc.update({'status': newStatus});
+
+      // Fetch the appBy field
+      DocumentSnapshot appointmentSnapshot = await appointmentDoc.get();
+      String appBy = appointmentSnapshot['appBy'];
+
+      // Fetch the user's deviceToken from the users collection
+      DocumentSnapshot userSnapshot =
+          await FirebaseFirestore.instance.collection('users').doc(appBy).get();
+
+      String deviceToken = userSnapshot['deviceToken'];
 
       switch (newStatus) {
         case 'accept':
-          _setAccept();
+          _setAccept(deviceToken);
           break;
         case 'reject':
-          _setReject();
+          _setReject(deviceToken);
           break;
         case 'pending':
-          _setPending();
+          _setPending(deviceToken);
           break;
         case 'complete':
-          _setComplete();
+          _setComplete(deviceToken);
           break;
       }
 
@@ -46,22 +60,52 @@ class AppointmentDetailsController extends GetxController {
     }
   }
 
-  void _setAccept() {
-    print("set accept");
+  void _setAccept(String deviceToken) {
+    if (kDebugMode) {
+      print("set accept");
+      print("Device Token: $deviceToken");
+      sendNotification(deviceToken, "Appoinment Acceped",
+          "Your appointment has been successfully accepted. Please check your appointment details for further information.");
+    }
   }
 
-  void _setReject() {
-    print("set reject");
-  }
-
-  void _setPending() {
-    print("set pending");
-  }
-
-  void _setComplete() {
-    print("set complete");
-
+  void _setReject(String deviceToken) {
+    if (kDebugMode) {
+      print("set reject");
+    }
+    sendNotification(deviceToken, "ppointment Rejected",
+        "We're sorry, but your appointment request has been rejected. Please check for alternative time slots or contact us for assistance.");
     isDropdownDisabled.value = true;
+  }
+
+  void _setPending(String deviceToken) {
+    if (kDebugMode) {
+      print("set pending");
+    }
+    sendNotification(deviceToken, "Appointment Pending",
+        "Your appointment request is currently pending. We will notify you once it has been reviewed and confirmed.");
+  }
+
+  void _setComplete(String deviceToken) {
+    if (kDebugMode) {
+      print("set complete");
+    }
+    sendNotification(deviceToken, "Appointment Completed",
+        "Your appointment has been completed successfully. Thank you for visiting us! We hope to see you again soon.");
+    isDropdownDisabled.value = true;
+  }
+
+  Future<void> sendNotification(
+      String userToken, String title, String body) async {
+    try {
+      final accessToken = await NotificationService().getAccessToken();
+      await NotificationService()
+          .sendNotification(accessToken, userToken, title, body);
+      print("notification send");
+    } catch (e) {
+      print('Error sending notifications: $e');
+      //_showDialog('Error', 'Error sending notification.');
+    }
   }
 
   Color getStatusColor(String status) {

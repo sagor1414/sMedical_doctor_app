@@ -24,7 +24,7 @@ class AppointmentDetails extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.greenColor,
+          backgroundColor: AppColors.whiteColor,
           title: Text(
             "Appointment Details",
             style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
