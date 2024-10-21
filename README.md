@@ -3,6 +3,9 @@
 
 This is a complete doctor appointment doctors app there doctor can see or modify appointments.
 
+# Important for notification
+
+For notification setup, please refer to this document and instructions: https://drive.google.com/drive/folders/11wbfbytmhuDvFNDczv6UtX2zJ3LBkm0G.
 
 ## Installation
 
