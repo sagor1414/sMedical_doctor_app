@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:s_medical_doctors/app/all%20reviews/all_reviews.dart';
 import 'package:s_medical_doctors/general/consts/consts.dart';
 import '../../notification/notification_details.dart';
 import '../../settings/view/setting_view.dart';
@@ -16,6 +17,7 @@ class _HomeState extends State<Home> {
   int selectedIndex = 0;
   List screenList = [
     const TotalAppointment(),
+    const AllReviewsScreen(),
     const SettingsView(),
   ];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -27,10 +29,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    // Initialize local notifications
     _initializeNotifications();
 
-    // Request notification permissions (for iOS)
     messaging
         .requestPermission(
       alert: true,
@@ -208,9 +208,17 @@ class _HomeState extends State<Home> {
         },
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.date_range), label: "Appointments"),
+            icon: Icon(Icons.date_range),
+            label: "Appointments",
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: "Settings"),
+            icon: Icon(Icons.reviews),
+            label: "Review",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "Settings",
+          ),
         ],
       ),
     );
