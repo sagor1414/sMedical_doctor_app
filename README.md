@@ -21,7 +21,7 @@ For support, email sagorsamadder.official@gmail.com
 
 ## Authors
 
-- [@sagor1414](https://www.github.com/sagor1414)
+- [@sagor1414](https://www.github.com/SagorSamadder)
 
 
 ## Features
@@ -43,8 +43,11 @@ For support, email sagorsamadder.official@gmail.com
 ![others](https://github.com/sagor1414/sMedical/blob/main/assets/images/Screenshot_1701920088.png?raw=true)
 
 ## License
-[sagor1414](https://github.com/sagor1414)
+[@SagorSamadder](https://github.com/SagorSamadder)
 
 
 ## 🚀 About Me
 I'm a full stack developer...
+
+# sMedical  
+**Built by Sagor Samadder**
